@@ -184,68 +184,64 @@ public class Signup3 extends JFrame implements ActionListener{
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        String atype = null;
-        if (r1.isSelected()){
-            atype = "Saving Account";
-        } else if (r2.isSelected()) {
-            atype ="Fixed Deposit Account";
-        }else if (r3.isSelected()){
-            atype ="Current Account";
-        }else if (r4.isSelected()){
-            atype = "Recurring Deposit Account";
-        }
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource() == submit) {
+            String accountType = null;
 
-        Random ran = new Random();
-        long first7 = (ran.nextLong() % 90000000L) + 1409963000000000L;
-        String cardno = "" + Math.abs(first7);
-
-        long first3 = (ran.nextLong() % 9000L)+ 1000L;
-        String pin = "" + Math.abs(first3);
-
-        String fac = "";
-        if(c1.isSelected()){
-            fac = fac+"ATM CARD ";
-        }
-        else if(c2.isSelected()){
-            fac = fac + "Internet Banking";
-        }
-        else if(c3.isSelected()){
-            fac = fac + "Mobile Banking";
-        }
-        else if(c4.isSelected()){
-            fac = fac + "EMAIL Alerts";
-        }
-        else if(c5.isSelected()){
-            fac = fac + "Cheque Book";
-        }
-        else if(c6.isSelected()){
-            fac = fac+"E-Statement";
-        }
-
-        try {
-            if (e.getSource() == s){
-                if (atype.equals("")){
-                    JOptionPane.showMessageDialog(null,"Fill all the fields");
-                }else {
-                    Conn c1 = new Conn();
-                    String q1 = "insert into signupthree values('"+formno+"', '"+atype+"','"+cardno+"','"+pin+"','"+fac+"')";
-                    String q2 = "insert into login values('"+formno+"','"+cardno+"','"+pin+"')";
-                    c1.statement.executeUpdate(q1);
-                    c1.statement.executeUpdate(q2);
-                    JOptionPane.showMessageDialog(null,"Card Number : "+cardno+"\n Pin : "+pin );
-                    new Deposit(pin);
-                    setVisible(false);
-                }
+            if (r1.isSelected()) accountType = "Saving Account";
+            else if (r2.isSelected()) accountType = "Fixed Deposit Account";
+            else if (r3.isSelected()) accountType = "Current Account";
+            else if (r4.isSelected()) accountType = "Recurring Deposit Account";
+    
+            // Get selected services
+            String services = "";
+            if (c1.isSelected()) services += " ATM Card";
+            if (c2.isSelected()) services += " Internet Banking";
+            if (c3.isSelected()) services += " Mobile Banking";
+            if (c4.isSelected()) services += " EMAIL Alerts";
+            if (c5.isSelected()) services += " Cheque Book";
+            if (c6.isSelected()) services += " E-Statement";
+    
+            // Checkbox validation
+            if (!c7.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Please accept the declaration to continue.");
+                return;
             }
-            else if(e.getSource() == c){
-                System.exit(0);
+    
+            if (accountType == null) {
+                JOptionPane.showMessageDialog(null, "Please select an Account Type.");
+                return;
             }
-
+    
+            // Generate Card Number & PIN
+            Random ran = new Random();
+            String cardNumber = "" + Math.abs((ran.nextLong() % 90000000L) + 5040936000000000L);
+            String pinNumber = "" + Math.abs((ran.nextLong() % 9000L) + 1000L);
+    
+            try {
+                Conn conn = new Conn();
+    
+                String q1 = "INSERT INTO signup3 (formno, accountType, cardNumber, pinNumber, services) VALUES ('" + formno + "', '" + accountType + "', '" + cardNumber + "', '" + pinNumber + "', '" + services + "')";
+                String q2 = "INSERT INTO login (formno, cardNumber, pinNumber) VALUES ('" + formno + "', '" + cardNumber + "', '" + pinNumber + "')";
+    
+                conn.s.executeUpdate(q1);
+                conn.s.executeUpdate(q2);
+    
+                JOptionPane.showMessageDialog(null, "Card Number: " + cardNumber + "\nPIN: " + pinNumber);
+                
+                // Optional: Move to next screen or close
+                setVisible(false);
+                new Deposit(pinNumber).setVisible(true); // You can create a Deposit screen or dashboard
+    
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else if (ae.getSource() == cancel) {
+            setVisible(false);
+            new Login().setVisible(true); // Redirect to login or main menu
         }catch (Exception E){
             E.printStackTrace();
         }
-
     }
 
     public static void main(String[] args) {

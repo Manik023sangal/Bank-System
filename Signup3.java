@@ -143,7 +143,7 @@ public class Signup3 extends JFrame implements ActionListener{
         c6.setBounds(350,600,200,30);
         add(c6);
 
-        JCheckBox c7 = new JCheckBox("I here by decleares that the above entered details correct to the best of my knlowledge.",true);
+        JCheckBox c7 = new JCheckBox(""I hereby declare that the above entered details are correct to the best of my knowledge.",true);
         c7.setBackground(new Color(215,252,252));
         c7.setFont(new Font("Raleway",Font.BOLD,12));
         c7.setBounds(100,680,600,20);

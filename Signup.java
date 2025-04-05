@@ -98,6 +98,7 @@ public class Signup extends JFrame implements ActionListener {
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(r1);
         buttonGroup.add(r2);
+        buttonGroup.add(r3);
 
         JLabel labelEmail = new JLabel("Email address :");
         labelEmail.setFont(new Font("Raleway", Font.BOLD, 20));
